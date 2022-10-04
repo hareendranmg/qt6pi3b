@@ -49,6 +49,28 @@ Then,
 
 Inside the Docker container, the Qt host installation is located at **~/qt-host**, the Qt target installation at **~/qt-raspi** (see [1]).
 
+## Mount host project folder in container
+`docker run -it --rm -v /home/hareendran/qt_dev/sda:/mnt qtpi/qtpi:1.0`
+
+Above command will mount the host system's /home/hareendran/qt_dev/sda folder into Docker container where it will be available under /mnt. (see [3])
+
+To cross compile to rpi3,
+      cd /mnt
+      mkdir build
+      cd build
+      ~/qt-raspi/bin/qt-cmake ../CMakeLists.txt 
+      cmake --build . --parallel 4
+      sudo cmake --install .
+
+Copy compiled files into raspberry,
+      scp -r sda pi@192.168.2.109:/home/pi/qt_dev
+
+In raspberry pi,
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/qt6/lib/
+      ldd sda  
+      ./sda
+
+
 For compiling and executing sample applications on the host or target, see [2].
 
 ## References
@@ -56,3 +78,5 @@ For compiling and executing sample applications on the host or target, see [2].
 [1] https://wiki.qt.io/Cross-Compile_Qt_6_for_Raspberry_Pi
 
 [2] https://github.com/PhysicsX/QTonRaspberryPi/blob/main/README.md
+
+[3] https://github.com/kevin-strobel/qt6pi3b/issues/1

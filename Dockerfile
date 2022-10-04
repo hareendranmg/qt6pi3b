@@ -13,14 +13,14 @@ FROM ubuntu:focal
 #                 PLEASE CUSTOMIZE THIS SECTION
 #######################################################################
 # The Qt version to build
-ARG QT_VERSION=6.3.1
+ARG QT_VERSION=6.3.2
 # The Qt modules to build
 # I use QtQuick with QML, so the following three modules need to be built
-ARG QT_MODULES=qtbase,qtshadertools,qtdeclarative
+# ARG QT_MODULES=qtbase,qtshadertools,qtdeclarative
 # How many cores to use for parallel builds
 ARG PARALLELIZATION=8
 # Your time zone (optionally change it)
-ARG TZ=Europe/Berlin
+ARG TZ=Asia/Kolkata
 #######################################################################
 
 ARG CMAKE_GIT_HASH=6b24b9c7fca09a7e5ca4ae652f4252175e168bde
@@ -31,10 +31,15 @@ ARG RPI_DEVICE=linux-rasp-pi3-g++
 #############################
 RUN apt update \
  && apt upgrade -y \
- && apt install sudo \
- && useradd -G sudo -m qtpi \
- && echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-USER qtpi:qtpi
+ && apt install -y sudo
+
+RUN adduser --disabled-password --gecos '' qtpi
+RUN adduser qtpi sudo
+#  && useradd -G sudo -m qtpi \
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER qtpi
+
 WORKDIR /home/qtpi
 
 #############################
@@ -83,7 +88,8 @@ RUN git clone https://github.com/Kitware/CMake.git \
 RUN git clone git://code.qt.io/qt/qt5.git qt6 \
  && cd qt6 \
  && git checkout v${QT_VERSION} \
- && perl init-repository --module-subset=${QT_MODULES}
+ && perl init-repository -f
+#  && perl init-repository --module-subset=${QT_MODULES}
 # Leave the qt6 folder in case you must look up sources later
 
 #################
