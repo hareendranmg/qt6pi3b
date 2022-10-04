@@ -55,12 +55,14 @@ Inside the Docker container, the Qt host installation is located at **~/qt-host*
 Above command will mount the host system's /home/hareendran/qt_dev/sda folder into Docker container where it will be available under /mnt. (see [3])
 
 To cross compile to rpi3,
-      cd /mnt
-      mkdir build
-      cd build
-      ~/qt-raspi/bin/qt-cmake ../CMakeLists.txt 
-      cmake --build . --parallel 4
-      sudo cmake --install .
+```
+cd /mnt
+mkdir build
+cd build
+~/qt-raspi/bin/qt-cmake ../CMakeLists.txt 
+cmake --build . --parallel 4
+sudo cmake --install .
+```
 
 Copy compiled files into raspberry,
       scp -r sda pi@192.168.2.109:/home/pi/qt_dev
